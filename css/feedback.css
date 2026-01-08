@@ -1,0 +1,5 @@
+.bg1 {
+    background: url('../image/feedback.png');
+    background-size: cover;
+    min-height: 535px;
+}
