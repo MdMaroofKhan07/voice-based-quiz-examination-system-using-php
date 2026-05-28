@@ -1,59 +1,165 @@
-
+/* Background Image */
 .bg1 {
-    background: url('../image/blueMoon.webp');
+    background: url('../image/Project Image3.png') no-repeat left center;
     background-size: cover;
-    min-height: 535px;
+    min-height: 610px;
 }
-.panel{
-border-color:#171616;
-background-color: #202020;
-margin:57px ;
-padding:20px;
-font: 15px "Century Gothic", "Times Roman", sans-serif;
-font-weight: bold;
+
+/* Enter your name , Select Gender */
+.panel {
+  background: rgba(0, 0, 0, 0.75); /* semi-transparent dark */
+  border: 1px solid rgba(0, 255, 255, 0.2);
+
+  margin: 30px;
+  padding: 25px;
+
+  border-radius: 15px;
+
+  font: 15px "Century Gothic", "Times Roman", sans-serif;
+  font-weight: bold;
+  color: white;
+
+  /* Glass effect */
+  backdrop-filter: blur(10px);
+
+  /* Soft glow */
+  box-shadow:
+    0 0 10px rgba(0,255,255,0.2),
+    0 0 20px rgba(0,0,255,0.2);
+
+  transition: all 0.3s ease-in-out;
 }
+.panel:hover {
+  transform: translateY(-5px); /* lift effect */
+
+  box-shadow:
+    0 0 15px #00ffff,
+    0 0 30px #0037ff,
+    0 0 50px rgba(0,255,255,0.5);
+}
+
+
+/* Header */
 .header
 {
-background:#202020;
+background:#000000;
 height:90px;
 }
-.logo
-{
-font-family:'typo';
-font-size:35px;
-color:rgb(15, 234, 234);
-margin:15px;
+
+/* Online-Examination............ */
+.logo {
+  font-family: 'typo';
+  font-size: 50px;
+  margin: 15px;
+  white-space: nowrap;
+
+  color: #00eaff;
+
+  /* Controlled glow (not too much blur) */
+  text-shadow:
+    0 0 3px #00eaff,
+    0 0 6px #00eaff,
+    0 0 10px #071bb0;
+
+  /* Improve sharpness */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-.sub1
-{
-width:90px;
-color:#202020;
-background:rgb(15, 234, 234);
-font-size:15px;
-height:35px;
-margin:20px;
-padding:10px;
-width:100px;
+.logo {
+  animation: glow 2s infinite alternate;
 }
 
-
-.sub
-{
-width:100%;
-background-color:rgb(15, 234, 234);
-font-size:20px;
-padding:2px;
-margin-top:15px;
-margin-right:20px;
+@keyframes glow {
+  from {
+    text-shadow: 0 0 5px #00ffff;
+  }
+  to {
+    text-shadow: 0 0 20px #00ffff, 0 0 40px #0066ff;
+  }
 }
+
+/* signin button */
+.sub1 {
+  width: 100px;
+  height: 35px;
+  margin: 20px;
+  padding: 10px;
+
+  color: #000;
+  font-size: 15px;
+  font-weight: bold;
+
+  background: linear-gradient(45deg, #00ffff, #8a2be2);
+  border: none;
+  border-radius: 20px;
+
+  cursor: pointer;
+
+  /* Smooth animation */
+  transition: all 0.3s ease-in-out;
+
+  /* Glow effect */
+  box-shadow: 0 0 10px #00ffff;
+}
+
+/* Hover Animation */
+.sub1:hover {
+  transform: scale(1.08);
+
+  background: linear-gradient(45deg, #ff00cc, #3333ff);
+
+  box-shadow:
+    0 0 10px #ff00cc,
+    0 0 20px #ff00cc,
+    0 0 30px #3333ff;
+}
+
+/* signp button */
+.sub {
+  width: 100%;
+  font-size: 20px;
+  padding: 8px;
+  margin-top: 15px;
+
+  color: #000;
+  font-weight: bold;
+
+  background: linear-gradient(45deg, #00ffff, #8a2be2);
+  border: none;
+  border-radius: 25px;
+
+  cursor: pointer;
+
+  transition: all 0.3s ease-in-out;
+
+  box-shadow: 0 0 10px #00ffff;
+}
+
+/* Hover Effect */
+.sub:hover {
+  transform: scale(1.05);
+
+  background: linear-gradient(45deg, #ff00cc, #3333ff);
+
+  color: white;
+
+  box-shadow:
+    0 0 10px #ff00cc,
+    0 0 20px #ff00cc,
+    0 0 30px #3333ff;
+}
+
+/* Footer */
 .footer
 {
 font-size:15px;
 text-align:center;
 border-top:1px solid;
-border-color:#323232;
-background-color:#202020;
+border-color:#000000;
+background-color:#000000;
 }
+
+/* Admin login , feedback ... */
 .footer a
 {
 margin:25px;
@@ -62,62 +168,39 @@ text-decoration:none;
 font: 15px "Century Gothic", "Times Roman", sans-serif;
 
 }
-.footer a:hover
-{
-text-decoration:none;
-color:#9acd32;
-border-top:2px solid;
-border-color:rgb(15, 234, 234);
+.footer a {
+  transition: all 0.3s ease-in-out;
+}
+.footer a:hover {
+  text-decoration: none;
+  color: #ffffff;
 
-}
+  border-top: 2px solid rgb(15, 234, 234);
 
-.box
-{
-padding:9px;
-}
-hr{
-color:#000000;
-}
-.top
-{
-margin-top:20px;
-}
-.log1
-{
-font: 15px 'Ubuntu', sans-serif;
-color:rgb(15, 234, 234);
-margin-left:10px;
-}
+  background: linear-gradient(45deg, #ff00cc, #3333ff);
 
-.log
-{
-margin:10px;
-margin-right:60px;
-margin-left:5px;
-color:rgb(15, 234, 234);
-text-decoration:none;
-font-size:20px;
-font-size:15px;
+  transform: translateY(-3px) scale(1.05);
+
+  box-shadow:
+    0 0 10px #00ffff,
+    0 0 20px #ff00cc,
+    0 0 30px #3333ff;
+
+  text-shadow:
+    0 0 5px #00ffff,
+    0 0 10px #ff00cc;
 }
-.log:hover
-{
-color:#9acd32;
-border-top:2px solid;
-border-color:rgb(15, 234, 234);
-text-decoration:none;
+.footer a:hover {
+  animation: neonPulse 1.5s infinite alternate;
 }
 
-/* TTS button */
-.tts-play-btn {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font-size: 18px;
-  vertical-align: middle;
-  padding: 2px 6px;
-  color: #202020;
+@keyframes neonPulse {
+  from {
+    box-shadow: 0 0 10px #00ffff;
+  }
+  to {
+    box-shadow: 0 0 25px #ff00cc, 0 0 40px #3333ff;
+  }
 }
-.tts-controls {
-  margin: 8px 0;
-  font-size: 14px;
-}
+
+
