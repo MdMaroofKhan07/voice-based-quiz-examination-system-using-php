@@ -1,5 +1,221 @@
-.bg1 {
-    background: url('../image/feedback.png');
-    background-size: cover;
-    min-height: 535px;
+/* Background Image */
+body {
+  background: 
+    
+    url('../image/Project Image6.png') no-repeat center center;
+
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+/* Home & Signin Buttons */
+.sub1 {
+  background: linear-gradient(45deg, aqua, aqua);
+  color: #000 !important;
+
+  border: none;
+  border-radius: 20px;
+
+  padding: 8px 18px;
+  font-size: 14px;
+  font-weight: bold;
+
+  transition: all 0.3s ease-in-out;
+
+  box-shadow: 0 0 8px rgba(255, 153, 0, 0.8);
+}
+
+/* Hover Effect */
+.sub1:hover {
+  background: linear-gradient(45deg, #f004e0, #f004e0);
+  color: #fff !important;
+
+  transform: translateY(-2px) scale(1.05);
+
+  box-shadow:
+    0 0 10px #00ffff,
+    0 0 20px #00ffff,
+    0 0 30px #0066ff;
+}
+
+/* Click Effect */
+.sub1:active {
+  transform: scale(0.95);
+}
+
+/* Main Panel Styling */
+.panel {
+  background: rgba(0, 0, 0, 0.6) !important;  /* transparent glass */
+  
+  border-radius: 20px;
+  padding: 30px;
+
+  /* Glow border */
+  border: 1px solid rgba(0, 255, 255, 0.6);
+
+  /* Glass blur effect */
+  backdrop-filter: blur(15px);
+
+  /* Neon glow */
+  box-shadow:
+    0 0 10px #00ffff,
+    0 0 20px rgba(0, 255, 255, 0.5),
+    0 0 40px rgba(0, 102, 255, 0.5);
+
+  transition: all 0.3s ease-in-out;
+}
+
+/* Hover glow effect (optional but cool) */
+.panel:hover {
+  box-shadow:
+    0 0 20px #00ffff,
+    0 0 40px #00ffff,
+    0 0 60px #0066ff;
+}
+
+h2 {
+  color: #00ffff;
+  text-align: center;
+
+  text-shadow:
+    0 0 5px #00ffff,
+    0 0 15px #00ffff,
+    0 0 25px #0066ff;
+}
+
+b {
+  color: #ffffff;
+  font-weight: 500;
+
+  text-shadow: 0 0 5px rgba(255,255,255,0.5);
+}
+
+/* Description text */
+.panel p {
+  color: rgba(255,255,255,0.75);
+  font-size: 15px;
+  line-height: 1.6;
+
+  text-align: center;
+
+  /* soft glow */
+  text-shadow: 0 0 5px rgba(0,255,255,0.3);
+}
+
+.panel a {
+  color: #00ffff;
+  font-weight: bold;
+  text-decoration: none;
+
+  text-shadow:
+    0 0 5px #00ffff,
+    0 0 10px #00ffff;
+}
+
+.panel a:hover {
+  color: #ff00cc;
+  text-shadow:
+    0 0 10px #ff00cc,
+    0 0 20px #ff00cc;
+}
+
+.form-control::placeholder {
+  color: rgba(255,255,255,0.6);
+  font-size: 14px;
+
+  /* subtle glow */
+  text-shadow: 0 0 3px rgba(0,255,255,0.3);
+}
+
+/* Full browser support */
+.form-control::-webkit-input-placeholder {
+  color: rgba(255,255,255,0.6);
+}
+.form-control:-ms-input-placeholder {
+  color: rgba(255,255,255,0.6);
+}
+
+.form-control {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(0,255,255,0.4);
+  color: #fff;
+
+  border-radius: 10px;
+  padding: 10px;
+
+  transition: 0.3s;
+}
+
+/* Focus effect (when clicking input) */
+.form-control:focus {
+  background: rgba(0,0,0,0.6);
+  border-color: #ff00cc;
+
+  box-shadow:
+    0 0 10px #ff00cc,
+    0 0 20px rgba(255,0,204,0.5);
+}
+
+.panel b {
+  color: #ffffff;
+  font-weight: 500;
+
+  text-shadow:
+    0 0 5px rgba(255,255,255,0.4);
+}
+
+/* Submit Button */
+.btn-primary {
+  background: rgba(0, 255, 255, 0.1);
+  color: #00ffff;
+
+  border: 1px solid #00ffff;
+  border-radius: 25px;
+
+  padding: 10px 30px;
+  font-size: 16px;
+  font-weight: bold;
+
+  backdrop-filter: blur(10px);
+
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+
+  box-shadow:
+    0 0 10px rgba(0,255,255,0.5),
+    inset 0 0 10px rgba(0,255,255,0.2);
+}
+
+/* Hover Effect */
+.btn-primary:hover {
+  background: linear-gradient(45deg, #00ffff, #0066ff);
+  color: #000;
+
+  transform: translateY(-3px) scale(1.05);
+
+  box-shadow:
+    0 0 15px #00ffff,
+    0 0 30px #00ffff,
+    0 0 50px #0066ff;
+}
+
+/* Click Effect */
+.btn-primary:active {
+  transform: scale(0.95);
+}
+
+.btn-primary {
+  animation: neonPulse 2s infinite;
+}
+
+@keyframes neonPulse {
+  0% {
+    box-shadow: 0 0 5px #00ffff;
+  }
+  50% {
+    box-shadow: 0 0 20px #00ffff, 0 0 40px #0066ff;
+  }
+  100% {
+    box-shadow: 0 0 5px #00ffff;
+  }
 }
