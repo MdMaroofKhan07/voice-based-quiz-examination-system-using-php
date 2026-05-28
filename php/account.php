@@ -1,8 +1,4 @@
-<!-- Initializes the session, includes database connection, checks user login,
-and fetches the logged-in user's details from the session. -->
 <?php
-// account.php - Final version with voice/TTS/ASR behavior
-// Backup your original file before replacing.
 
 include_once 'dbConnection.php';
 session_start();
@@ -15,6 +11,7 @@ if (!(isset($_SESSION['email']))) {
 $name = isset($_SESSION['name']) ? $_SESSION['name'] : '';
 $email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,7 +51,7 @@ $email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
         <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#"><b>Netcamp</b></a>
+      <a class="navbar-brand" href="#"><b>University Polytechnic</b></a>
     </div>
     <!-- 
       Creates a responsive navigation bar with Home, History, Ranking, and Signout links,
@@ -93,12 +90,13 @@ $email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
       $eid = $row['eid'];
       $q12 = mysqli_query($con, "SELECT score FROM history WHERE eid='$eid' AND email='$email'") or die('Error98');
       $rowcount = mysqli_num_rows($q12);
+      // Start button
       if ($rowcount == 0) {
         echo '<tr><td>'.$c++.'</td><td>'.htmlspecialchars($title, ENT_QUOTES, 'UTF-8').'</td><td>'.$total.'</td><td>'.($sahi*$total).'</td><td>'.$time.'&nbsp;min</td>
-        <td><b><a href="account.php?q=quiz&step=2&eid='.$eid.'&n=1&t='.$total.'" class="pull-right btn sub1" style="margin:0px;background:#99cc32"><span class="glyphicon glyphicon-new-window"></span>&nbsp;<span class="title1"><b>Start</b></span></a></b></td></tr>';
+        <td><b><a href="account.php?q=quiz&step=2&eid='.$eid.'&n=1&t='.$total.'" class="pull-right btn start-btn" style="margin:0px"><span class="glyphicon glyphicon-new-window"></span>&nbsp;<span class="title1"><b>Start</b></span></a></b></td></tr>';
       } else {
         echo '<tr style="color:#99cc32"><td>'.$c++.'</td><td>'.htmlspecialchars($title, ENT_QUOTES, 'UTF-8').'&nbsp;<span title="This quiz is already solved by you" class="glyphicon glyphicon-ok"></span></td><td>'.$total.'</td><td>'.($sahi*$total).'</td><td>'.$time.'&nbsp;min</td>
-        <td><b><a href="update.php?q=quizre&step=25&eid='.$eid.'&n=1&t='.$total.'" class="pull-right btn sub1" style="margin:0px;background:red"><span class="glyphicon glyphicon-repeat"></span>&nbsp;<span class="title1"><b>Restart</b></span></a></b></td></tr>';
+        <td><b><a href="update.php?q=quizre&step=25&eid='.$eid.'&n=1&t='.$total.'" class="pull-right btn restart-btn" style="margin:0px"><span class="glyphicon glyphicon-repeat"></span>&nbsp;<span class="title1"><b>Restart</b></span></a></b></td></tr>';
       }
     }
     echo '</table></div></div>';
@@ -118,12 +116,19 @@ then generates a form to submit the selected answer for evaluation. -->
     $total = intval(@$_GET['t']);
 
     $q = mysqli_query($con, "SELECT * FROM questions WHERE eid='$eid' AND sn='$sn'") or die('Error fetching question');
-    echo '<div class="panel" style="margin:5%">';
-    while ($row = mysqli_fetch_array($q)) {
-      $qns = $row['qns'];
-      $qid = $row['qid'];
-      echo '<div id="question_text"><b>Question '.htmlspecialchars($sn, ENT_QUOTES, 'UTF-8').' ::<br>'.htmlspecialchars($qns, ENT_QUOTES, 'UTF-8').'</b></div><br>';
-    }
+
+if(mysqli_num_rows($q) == 0) {
+    // ❗ No question = quiz finished
+    header("location:account.php?q=result&eid=$eid");
+    exit();
+}
+
+echo '<div class="panel quiz-box" style="margin:5%">';
+$row = mysqli_fetch_array($q);
+$qns = $row['qns'];
+$qid = $row['qid'];
+
+echo '<div id="question_text" class="question-text"><b>Question '.$sn.' ::<br>'.$qns.'</b></div><br>';
 
     $q = mysqli_query($con, "SELECT * FROM options WHERE qid='$qid'") or die('Error fetching options');
     echo '<form id="quizForm" action="update.php?q=quiz&step=2&eid='.urlencode($eid).'&n='.urlencode($sn).'&t='.urlencode($total).'&qid='.urlencode($qid).'" method="POST" class="form-horizontal"><br />';
@@ -134,13 +139,16 @@ then generates a form to submit the selected answer for evaluation. -->
       $optionid = $row['optionid'];
       $optIndex++;
       $optTextId = 'opt_'.htmlspecialchars($qid, ENT_QUOTES, 'UTF-8').'_'.$optIndex;
-      echo '<label>';
+      echo '<label class="option-label">';
       echo '<input type="radio" name="ans" value="'.htmlspecialchars($optionid, ENT_QUOTES, 'UTF-8').'"> ';
       echo '<span id="'.$optTextId.'" class="option-text">'.htmlspecialchars($option, ENT_QUOTES, 'UTF-8').'</span>';
       echo '</label><br /><br />';
     }
 
-    echo '<br /><button id="submitBtn" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-lock"></span>&nbsp;Submit</button></form></div>';
+    echo '<br /><button id="submitBtn" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-lock"></span>&nbsp;Submit</button>
+    <button type="button" id="skipBtn" class="btn btn-warning" style="margin-left:10px;">
+    ⏭ Skip
+    </button></form></div>';
   }
   ?>
 
@@ -161,16 +169,27 @@ then generates a form to submit the selected answer for evaluation. -->
     $q = mysqli_query($con, "SELECT * FROM history WHERE eid='$eid' AND email='$email'") or die('Error157');
     echo '<div class="panel"><center><h1 class="title" style="color:#660033">Result</h1></center><br /><table class="table table-striped title1" style="font-size:20px;font-weight:1000;">';
     while ($row = mysqli_fetch_array($q)) {
-      $s = $row['score']; $w = $row['wrong']; $r = $row['sahi']; $qa = $row['level'];
-      echo '<tr style="color:#66CCFF"><td>Total Questions</td><td>'.$qa.'</td></tr>
-            <tr style="color:#99cc32"><td>Right Answer&nbsp;<span class="glyphicon glyphicon-ok-circle"></span></td><td>'.$r.'</td></tr>
-            <tr style="color:red"><td>Wrong Answer&nbsp;<span class="glyphicon glyphicon-remove-circle"></span></td><td>'.$w.'</td></tr>
-            <tr style="color:#66CCFF"><td>Score&nbsp;<span class="glyphicon glyphicon-star"></span></td><td>'.$s.'</td></tr>';
+      $s = $row['score']; $w = $row['wrong']; $r = $row['sahi']; $qa = $row['level']; // attempted questions
+      if(isset($_GET['t'])) {
+    $total = $_GET['t'];
+} else {
+    // fallback: get total from quiz table
+    $res = mysqli_query($con, "SELECT total FROM quiz WHERE eid='$eid'");
+    $row2 = mysqli_fetch_array($res);
+    $total = $row2['total'];
+}
+      echo '
+<tr style="color:#66CCFF"><td>Total Questions</td><td id="res_total">'.$total.'</td></tr>
+<tr style="color:blue"><td>Attempted Questions</td><td id="res_attempted">'.$qa.'</td></tr>
+<tr style="color:#99cc32"><td>Right Answer</td><td id="res_right">'.$r.'</td></tr>
+<tr style="color:red"><td>Wrong Answer</td><td id="res_wrong">'.$w.'</td></tr>
+<tr style="color:orange"><td>Score</td><td id="res_score">'.$s.'</td></tr>
+';
     }
     $q2 = mysqli_query($con, "SELECT * FROM rank WHERE email='$email'") or die('Error157');
     while ($row = mysqli_fetch_array($q2)) {
       $s = $row['score'];
-      echo '<tr style="color:#990000"><td>Overall Score&nbsp;<span class="glyphicon glyphicon-stats"></span></td><td>'.$s.'</td></tr>';
+      echo '<tr style="color:#990000"><td>Overall Score</td><td id="res_overall">'.$s.'</td></tr>';
     }
     echo '</table></div>';
   }
@@ -217,11 +236,46 @@ then generates a form to submit the selected answer for evaluation. -->
   <div class="col-md-3 box"><a href="feedback.php" target="_blank">Feedback</a></div>
 </div>
 
-<!-- minimal modals -->
 <div class="modal fade title1" id="developers">
-  <div class="modal-dialog"><div class="modal-content"><div class="modal-header">
-  <button type="button" class="close" data-dismiss="modal">&times;</button><h4 class="modal-title"><span style="color:orange">Developers</span></h4></div>
-  <div class="modal-body">Developer info...</div></div></div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title"><span style="color:orange">Developers</span></h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+
+          <div class="col-md-4">
+            <img src="image/Maroof 3.jpg"
+                 width="100"
+                 height="100"
+                 alt="Md Maroof Khan"
+                 class="img-rounded">
+          </div>
+
+          <div class="col-md-5">
+            <a href="https://www.linkedin.com/in/Md Maroof Khan"
+               target="_blank"
+               style="color:#202020; font-family:'typo'; font-size:18px">
+               Md Maroof Khan
+            </a>
+
+            <h4 class="title1" style="color:#202020; font-size:16px">
+              +91 9569864910
+            </h4>
+
+            <h4>kmaroof1107@gmail.com</h4>
+            <h4>University Polytechnic , AMU</h4>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
 
 <div class="modal fade" id="login">
@@ -349,6 +403,29 @@ function submitAnswer() {
     if (btn) btn.click();
   });
 }
+// ================= SKIP FUNCTION =================
+function skipQuestion() {
+  awaitingConfirm = false;
+  pausedAfterNo = false;
+  clearConfirmTimer();
+
+  speakWithCallbackMale("Skipping this question.", function () {
+
+    var url = new URL(window.location.href);
+    var n = parseInt(url.searchParams.get("n")) || 1;
+    var total = parseInt(url.searchParams.get("t")) || 1;
+
+    if (n < total) {
+      url.searchParams.set("n", n + 1);
+      window.location.href = url.toString();
+    } else {
+      speakWithCallbackMale("Last question reached. Submitting quiz.", function () {
+        var btn = document.querySelector('#submitBtn');
+        if (btn) btn.click();
+      });
+    }
+  });
+}
 
 // --- match option and capture spoken form ---
 function tryMatchOptionWithForm(command) {
@@ -403,6 +480,11 @@ function handleCommand(command) {
   console.log('Heard:', command);
 
   if (pausedAfterNo) {
+    if (command.indexOf('skip') !== -1) {
+  pausedAfterNo = false;
+  skipQuestion();
+  return;
+}
     if (command.indexOf('repeat') !== -1) {
       pausedAfterNo = false;
       var t = buildReadText();
@@ -424,6 +506,10 @@ function handleCommand(command) {
   }
 
   if (awaitingConfirm) {
+    if (command.indexOf('skip') !== -1) {
+  skipQuestion();
+  return;
+}
     if (command.indexOf('yes') !== -1 || command.indexOf('submit') !== -1) {
       submitAnswer();
       return;
@@ -448,10 +534,15 @@ function handleCommand(command) {
     if (t) speakWithCallbackMale(t, function(){ if (recognition) try{ recognition.start(); } catch(e){} });
     return;
   }
-  if (command.indexOf('submit') !== -1 || command.indexOf('next') !== -1) {
-    submitAnswer();
-    return;
-  }
+  // ================= SKIP COMMAND =================
+if (
+  command.indexOf('skip') !== -1 ||
+  command.indexOf('next') !== -1 ||
+  command.indexOf('pass') !== -1
+) {
+  skipQuestion();
+  return;
+}
 
   var match = tryMatchOptionWithForm(command);
   if (match.idx !== null) {
@@ -499,8 +590,40 @@ function initRecognition() {
   }
 }
 
+
 // --- start flow on page load ---
 document.addEventListener('DOMContentLoaded', function(){
+
+// ================= AUTO SPEAK RESULT =================
+if (window.location.search.includes("q=result")) {
+
+  setTimeout(function () {
+
+    let total = document.getElementById("res_total")?.innerText;
+    let attempted = document.getElementById("res_attempted")?.innerText;
+    let right = document.getElementById("res_right")?.innerText;
+    let wrong = document.getElementById("res_wrong")?.innerText;
+    let score = document.getElementById("res_score")?.innerText;
+    let overall = document.getElementById("res_overall")?.innerText;
+
+    let text = "Your quiz result is as follows. ";
+
+    if (total) text += "Total questions " + total + ". ";
+    if (attempted) text += "You attempted " + attempted + " questions. ";
+    if (right) text += "Correct answers " + right + ". ";
+    if (wrong) text += "Wrong answers " + wrong + ". ";
+    if (score) text += "Your score is " + score + ". ";
+    if (overall) text += "Your overall score is " + overall + ". ";
+
+    speakWithCallbackMale(text);
+
+  }, 700); // delay so DOM loads properly
+}
+
+  var skipBtn = document.getElementById("skipBtn");
+if (skipBtn) {
+  skipBtn.addEventListener("click", skipQuestion);
+}
   if (window.location.search.indexOf('q=quiz') === -1) return;
   ensureVoicesLoaded(function() {
     window._maleVoice = findMaleVoice();
@@ -526,6 +649,52 @@ window.addEventListener('beforeunload', function(){
   clearConfirmTimer();
   try { if (recognition) recognition.stop(); } catch(e){}
 });
+
+// ================= FINAL KEYBOARD CONTROLS =================
+document.addEventListener("keydown", function (e) {
+
+  const options = document.querySelectorAll('input[name="ans"]');
+  const submitBtn = document.getElementById("submitBtn");
+  const skipBtn = document.getElementById("skipBtn");
+
+  // Ignore typing in input fields
+  if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+
+  // -------- OPTION SELECT (1,2,3,4) --------
+  if (e.key >= "1" && e.key <= "4") {
+    let index = parseInt(e.key) - 1;
+
+    if (options[index]) {
+      options[index].checked = true;
+
+      // update your voice system state also
+      lastSelectedIndex = index;
+      lastSpokenForm = e.key;
+
+      speakWithCallbackMale("Option " + e.key + " selected");
+    }
+  }
+
+  // -------- SUBMIT (ENTER) --------
+  if (e.key === "Enter") {
+    e.preventDefault(); // prevent form auto-submit conflicts
+
+    if (submitBtn) {
+      submitAnswer(); // use your voice-confirm submit
+    }
+  }
+
+  // -------- SKIP (SHIFT KEY) --------
+  if (e.key === "Shift") {
+    e.preventDefault();
+
+    if (skipBtn) {
+      skipQuestion();
+    }
+  }
+
+});
+
 </script>
 
 </body>
