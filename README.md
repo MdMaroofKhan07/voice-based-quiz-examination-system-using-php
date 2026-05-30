@@ -1,7 +1,7 @@
 # Online Quiz Examination System for Visually and Physically Challenged Students
 
 A web-based Online Examination System developed using PHP, MySQL, HTML, CSS, and JavaScript.  
-This system allows students to take exams online with the help of Text-to-Speech (TTS) and Speech-to-Text (STT) features, making it accessible and easy to use.
+This system allows students to take exams online with the help of Text-to-Speech (TTS) , Speech-to-Text (STT) and Keyboard Navigation features, making it accessible and easy to use.
 
 ---
 
